@@ -1,0 +1,103 @@
+import pygame, sys , math
+from pygame.locals import *
+from sound import *
+
+class Tank(pygame.sprite.Sprite):
+
+    def __init__(self,X,Y):
+        pygame.sprite.Sprite.__init__(self)
+        self.health = 100
+        self.fireRate = 0.5 # fire rate is every half second
+        self.posX = X
+        self.posY = Y
+        self.mySound = Sound()
+        self.tankImages = [pygame.image.load('tanks/p1tank-str0.png'),pygame.image.load('tanks/p1tank-med0.png'),pygame.image.load('tanks/p1tank-high0.png')]
+        self.attackImages = [pygame.image.load('tanks/p1tank-str1.png'),pygame.image.load('tanks/p1tank-med1.png'),pygame.image.load('tanks/p1tank-high1.png')]
+        self.imageIndex = 0
+        self.image = self.tankImages[self.imageIndex]
+
+        self.imageWidth =168
+        self.imageHeight = 71
+        self.speedX = 100
+        self.speedY = 100
+        
+        #returns the tanks x position
+    def getX(self):
+        return self.posX
+
+     #returns the tanks Y position
+    def getY(self):
+        return self.posY
+
+    def getWidth(self):
+        return self.imageWidth
+
+    def getHP(self):
+        return self.health
+
+    def setHP(self,damage):
+        self.health -= damage
+        if(self.health < 0)
+            self.health = 0
+
+    def setImages(self,tnkimages,atckimages):
+        self.tankImages = tnkimages
+        self.attackImages = atckimages
+        
+    def getHeight(self):
+        return self.imageHeight
+
+    def getImage(self):
+        return self.tankImages[self.imageIndex]
+    
+    #this function allows the tank to move while keeping it in teh bounds
+    def IsInBounds(self,maxX,maxY,moveX,moveY):
+        if self.posX + moveX >= 0 and self.posX + self.imageWidth + moveX  <= maxX:
+            self.posX = self.posX + moveX
+        if self.posY + moveY >= 0 and self.posY + self.imageHeight + moveY  <= maxY:
+            self.posY = self.posY + moveY
+
+    def moveByKeyBoard(self,screenW,screenH):
+        self.image = self.tankImages[self.imageIndex]
+        for event in pygame.event.get():
+            if event.type == KEYDOWN:
+                #Press 1 to turn the cannon angle upwards
+                #Press 2 to turn the cannon angle downwards
+                if event.key == K_1:
+                   self.imageIndex = self.imageIndex + 1
+                   if self.imageIndex >= len(self.tankImages):
+                        self.imageIndex = len(self.tankImages)-1
+                elif event.key == K_2:
+                   self.imageIndex = self.imageIndex - 1
+                   if self.imageIndex < 0:
+                        self.imageIndex = 0
+                if event.key == K_d :
+                    self.IsInBounds(screenW,screenH,self.speedX,0)
+                elif event.key == K_a :
+                    self.IsInBounds(screenW,screenH,-self.speedX,0)
+                elif event.key == K_s :
+                    self.IsInBounds(screenW,screenH,0,self.speedY)
+                elif event.key == K_w :
+                    self.IsInBounds(screenW,screenH,0,-self.speedY)
+                elif event.key == K_SPACE:
+                    self.mySound.play("explosion_tank")
+                    self.image = self.attackImages[self.imageIndex]
+
+    def move(self,screenW,screenH,speed):
+        self.IsInBounds(screenW,screenH,speed,0)
+
+    #Draws the tank image 
+    def drawTank(self,screen):
+        screen.blit(self.image,(self.posX,self.posY))
+        pygame.display.update()
+                
+def confirm_collision(self, targetRect):
+        if targetRect.collidepoint(int(self.pos_x), int(self.pos_y)) == True:
+            adjusted_x = int(self.pos_x) - target.rect.left
+            adjusted_y = int(self.pos_y) - target.rect.top
+            if target.image.get_at((adjusted_x, adjusted_y)) != target.image.get_colorkey():
+                return True
+            else:
+                return False
+        else:
+            return False

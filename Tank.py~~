@@ -1,0 +1,64 @@
+import pygame, sys , math
+from pygame.locals import *
+
+
+class Tank(pygame.sprite.Sprite):
+
+    def __init__(self,X,Y):
+        pygame.sprite.Sprite.__init__(self)
+        self.health = 100
+        self.fireRate = 0.5 # fire rate is every half second
+        self.posX = X
+        self.posY = Y
+        self.tankImageLow = pygame.image.load('tanks/p1tank-str0.png')
+        self.tankImageMid = pygame.image.load('tanks/p1tank-med0.png')
+        self.tankImageHigh = pygame.image.load('tanks/p1tank-high0.png')
+        self.tankImage = self.tankImageMid
+        self.rect = self.tankImage.get_rect()
+        self.imageWidth =168
+        self.imageHeight = 71
+        self.speedX = 100
+        self.speedY = 100
+    
+        #returns the tanks x position
+    def getX(self):
+        return self.posX
+        
+     #returns the tanks Y position
+    def getY(self):
+        return self.posY
+
+    def getImage(self):
+        return self.tankImage
+    
+    def IsInBounds(self,maxX,maxY,moveX,moveY):
+        if self.posX + moveX >= 0 and self.posX + self.imageWidth + moveX  <= maxX:
+            self.posX = self.posX + moveX
+           
+        if self.posY + moveY >= 0 and self.posY + self.imageHeight + moveY  <= maxY:
+            self.posY = self.posY + moveY
+            
+        #if self.tankImageh + moveY < screenH or self.tankImageh + moveY > screenH:return 0
+
+    def moveByKeyBoard(self,screenW,screenH):
+        for event in pygame.event.get():
+            if event.type == KEYDOWN:
+                if event.key == K_d :
+                    self.IsInBounds(screenW,screenH,self.speedX,0)
+                if event.key == K_a :
+                    self.IsInBounds(screenW,screenH,-self.speedX,0)
+                if event.key == K_s :
+                    self.IsInBounds(screenW,screenH,0,self.speedY)
+                if event.key == K_w :
+                    self.IsInBounds(screenW,screenH,0,-self.speedY)
+                if event.key == K_1:
+                    self.tankImage = self.tankImageLow
+                if event.key == K_2:
+                    self.tankImage = self.tankImageMid
+                if event.key == K_3:
+                    self.tankImage = self.tankImageHigh
+
+    def drawTank(self,screen):
+        screen.blit(self.tankImage,(self.posX,self.posY))
+                
+
